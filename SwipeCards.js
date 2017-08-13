@@ -7,13 +7,9 @@ import {StyleSheet, Text, View, Image, TouchableOpacity} from 'react-native';
 import SwipeCards from 'react-native-swipe-cards';
 
 let Card = React.createClass({
-  handleTouch (card) {
-    console.log(card)
-  },
   render() {
-    const varthing = this.props.text
     return (
-      <TouchableOpacity onPress={_ => this.props.testingthing() }>
+      <TouchableOpacity onPress={_ => this.props.onTouchCallback({text: this.props.text})}>
         <View style={[styles.card, {backgroundColor: this.props.backgroundColor}]}>
           <Text>{this.props.text}</Text>
         </View>
@@ -47,37 +43,39 @@ const Cards = [
 
 export default class CustomSwipeCards extends React.Component {
   static navigationOptions = {
-    title: 'Clay Smells',
+    title: 'Flash Cards',
   }
   constructor(props) {
     super(props)
     this.state = {cards: Cards}
   }
-  handleYup (card) {
+  handleYup = (card) => {
     console.log(`Yup for ${card.text}`)
   }
-  handleNope (card) {
-    console.log(`Nope for ${card.text}`)
+  handleNope = (card) => {
+    const Round2Cards = [
+      {text: 'Aubergine', backgroundColor: 'purple'},
+      {text: 'Courgette', backgroundColor: 'green'},
+      {text: 'Blueberry', backgroundColor: 'blue'},
+      {text: 'Umm...', backgroundColor: 'cyan'},
+      {text: 'orange', backgroundColor: 'orange'},
+    ]
+    this.setState({cards: Round2Cards})
   }
-  handleMaybe = (card) => {
+  handleCardTouch = (card) => {
     const { navigate } = this.props.navigation;
-    navigate('Video', { name: 'Jane' })
-    console.log("TESTING 123")
-    // console.log(`Maybe for ${card.text}`)
+    navigate('Video', { term: card.text })
   }
   render() {
-    // If you want a stack of cards instead of one-per-one view, activate stack mode
-    // stack={true}
     return (
       <SwipeCards
         cards={this.state.cards}
-        renderCard={(cardData) => <Card testingthing={this.handleMaybe} {...cardData} />}
+        renderCard={(cardData) => <Card onTouchCallback={this.handleCardTouch} {...cardData} />}
         renderNoMoreCards={() => <NoMoreCards />}
         onClickHandler={this.handleTouch}
         handleYup={this.handleYup}
         handleNope={this.handleNope}
-        handleMaybe={this.handleMaybe}
-        hasMaybeAction
+        loop
       />
     )
   }
